@@ -275,6 +275,7 @@
 
       /* second */
       .hero-reveal {
+        overflow-x: hidden;
         position: absolute;
         inset: 0;
         z-index: 20;
@@ -428,15 +429,23 @@
           font-size: 12px;
           gap: 8px;
         }
-        /* 左邊 */
-        .hero-center-title-left {
-          left: calc(50% - 10px); /* 🔥 原本 24px → 10px */
-        }
+  .hero-center-title-left,
+  .hero-center-title-right {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    writing-mode: horizontal-tb;
+    text-orientation: initial;
+    white-space: nowrap;
+  }
 
-        /* 右邊 */
-        .hero-center-title-right {
-          left: calc(50% + 10px); /* 🔥 原本 24px → 10px */
-        }
+  .hero-center-title-left {
+    transform: translate(-50%, calc(-100% - 8px));
+  }
+
+  .hero-center-title-right {
+    transform: translate(-50%, 8px);
+  }
 
         /* 中央跑馬燈縮很多 */
         .hero-center-title span {
@@ -802,15 +811,17 @@
         y: 40,
       });
 
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
       const marqueeLeft = gsap.to(".hero-center-title-left span", {
-        y: "-20%",
+        ...(isMobile ? { x: "-20%" } : { y: "-20%" }),
         ease: "none",
         duration: 20,
         repeat: -1,
       });
 
       const marqueeRight = gsap.to(".hero-center-title-right span", {
-        x: "-20%",
+        x: isMobile ? "20%" : "-20%",
         ease: "none",
         duration: 20,
         repeat: -1,
@@ -866,7 +877,7 @@
         scrollTrigger: {
           trigger: ".hero-section",
           start: "top top",
-          end: () => "+=" + window.innerHeight * 3,
+          end: () => "+=" + window.innerHeight * 5,
           scrub: true,
           pin: true,
           invalidateOnRefresh: true,
